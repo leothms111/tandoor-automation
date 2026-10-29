@@ -12,7 +12,7 @@ import json
 import subprocess
 from collections import Counter
 from dataclasses import dataclass, field
-from datetime import date
+from datetime import date, datetime
 from pathlib import Path
 from typing import Any
 
@@ -140,6 +140,19 @@ def file_pdf(path: Path, dry_run: bool) -> Filed:
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_bytes(path.read_bytes())
     return Filed(line, True)
+
+
+def last_kaufland() -> date | None:
+    """Das Kaufdatum des zuletzt eingeworfenen Kaufland-Belegs, ohne Beleg `None`.
+
+    Zuletzt eingeworfen heißt: zuletzt abgelegt, nicht zuletzt gekauft. Das Datum steht vorn in
+    der Bonnummer und damit im Dateinamen, das PDF muss dafür nicht gelesen werden.
+    """
+    filed = list(kaufland_dir().glob("*.pdf"))
+    if not filed:
+        return None
+    newest = max(filed, key=lambda path: path.stat().st_mtime)
+    return datetime.strptime(newest.stem[:8], "%Y%m%d").date()
 
 
 def pdf_text(path: Path) -> str:

@@ -35,7 +35,11 @@ _foods = Cached(lambda tandoor: tandoor.foods())
 @router.get("/bons", response_class=HTMLResponse)
 def receipts_page(request: Request) -> Response:
     """Das Gerüst der Seite. Die Zuordnung lädt htmx nach, sie liest alle Bons."""
-    return templates.TemplateResponse(request, "bons.html", {"first_run": not store.booked()})
+    return templates.TemplateResponse(
+        request,
+        "bons.html",
+        {"first_run": not store.booked(), "last_kaufland": intake.last_kaufland()},
+    )
 
 
 @router.post("/bons/lidl", response_class=HTMLResponse)

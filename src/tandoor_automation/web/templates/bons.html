@@ -16,6 +16,7 @@
       <label>
         Kaufland-Beleg als PDF
         <input type="file" name="dateien" accept="application/pdf" multiple required>
+        <small>{% if last_kaufland %}Zuletzt eingelesen: Bon vom {{ last_kaufland.strftime("%d.%m.%Y") }}{% else %}Noch kein Beleg eingelesen{% endif %}</small>
       </label>
       <button type="submit" class="secondary">Einlesen</button>
     </form>
