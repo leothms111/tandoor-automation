@@ -34,6 +34,11 @@
 423	1	7	100 g	100	Kidneybohnen
 201	0	1	100 g	32	Hafermilch
 660	5.5	18.7	100 g	339	Hefeflocken
+663	3.5	0	100 g	62	Frischkäse light 0,2%
+664	3	0	100 g	190	Frischkäse Balance
+148	0	2.1	100 g	43	Dill
+186	0	6.8	100 g	44	Minze
+78	0.3	2.7	100 g	362	Weizenmehl 405
 
 # --- Standardwerte ---
 514	0.5	0	100 ml	10	Bratenfond
@@ -87,7 +92,7 @@
 41	40	0	100 g	88	Essig Balsamico
 371	0.6	0.6	100 g	145	Fester Tofu
 15	1.63	0	100 g	260	Feta
-17	3.2	0	100 g	210	Frischkäse
+17	3	0	100 g	252	Frischkäse Classic
 103	0	0	100 g	260	Garam Masala
 109	1.7	0.5	100 g	15	Gurke
 356	0.8	10.5	100 g	389	Hafervollkornmehl
