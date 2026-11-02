@@ -188,7 +188,7 @@ def apply_proposal(
     plan = unfold(proposal, together_of(bundle), leads)
     matches = match_existing(plan, bundle)
     rest = without(bundle, [twin for _, twin in matches if twin])
-    problems = validate_proposal(plan, rest) + share_problems(plan)
+    problems = validate_proposal(plan, rest, date.today()) + share_problems(plan)
     if problems:
         return Applied(problems, [])
     lines = []

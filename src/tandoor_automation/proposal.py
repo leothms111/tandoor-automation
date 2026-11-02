@@ -22,6 +22,9 @@ HOUSEHOLD = len(MARKS)
 TOGETHER = "Abendessen"
 """Die Mahlzeit, die alle zusammen essen. Sie trägt keine Marken, SyncHealth teilt sie auf die Esser
 im Haushalt auf und erkennt sie an genau diesem Namen."""
+REQUIRED = ("Mittagessen", TOGETHER)
+"""Die Mahlzeiten, die jeden Tag gedeckt sein müssen. Frühstück darf geplant werden, muss aber
+nicht."""
 TOLERANCE = 0.01
 
 
@@ -144,16 +147,21 @@ def _is_booked(proposal: Proposal, meal_type: MealType, day: date) -> bool:
     )
 
 
-def _coverage_problems(proposal: Proposal, bundle: PlanBundle) -> list[str]:
+def _coverage_problems(proposal: Proposal, bundle: PlanBundle, since: date | None) -> list[str]:
     """Findet Plätze der Woche, für die zu wenige Portionen eingeplant sind.
 
     Zwei Sorten Platz bleiben außen vor: einer, den Tandoor schon belegt, etwa durch das Gericht
     der Vorwoche, und einer, für den der Vorschlag selbst einen Termin ohne Rezept einträgt. An
-    beiden wird gegessen, nur nicht aus der eigenen Küche.
+    beiden wird gegessen, nur nicht aus der eigenen Küche. Tage vor `since` zählen auch nicht, ein
+    Plan, der mitten in der Woche geändert wird, kann sie nicht mehr decken.
     """
     problems = []
     for day in bundle.days:
+        if since is not None and day < since:
+            continue
         for meal_type in bundle.meal_types:
+            if meal_type.name not in REQUIRED:
+                continue
             if _is_occupied(bundle, meal_type, day) or _is_booked(proposal, meal_type, day):
                 continue
             served = sum(
@@ -166,12 +174,16 @@ def _coverage_problems(proposal: Proposal, bundle: PlanBundle) -> list[str]:
     return problems
 
 
-def validate_proposal(proposal: Proposal, bundle: PlanBundle) -> list[str]:
+def validate_proposal(
+    proposal: Proposal, bundle: PlanBundle, since: date | None = None
+) -> list[str]:
     """Prüft einen Vorschlag gegen das Bündel, aus dem er gewählt wurde.
 
     Args:
         proposal: Der Vorschlag des Wählers.
         bundle: Das Bündel derselben Woche.
+        since: Erster Tag, der gedeckt sein muss, beim Ändern einer laufenden Woche heute. Ohne
+            Angabe die ganze Woche.
 
     Returns:
         Alle gefundenen Mängel als Klartextzeilen. Leer heißt: der Vorschlag darf geschrieben
@@ -183,4 +195,5 @@ def validate_proposal(proposal: Proposal, bundle: PlanBundle) -> list[str]:
     for entry in proposal.entries:
         problems += _recipe_problems(entry, bundle)
         problems += _period_problems(entry, bundle)
-    return problems + _collision_problems(proposal, bundle) + _coverage_problems(proposal, bundle)
+    problems += _collision_problems(proposal, bundle)
+    return problems + _coverage_problems(proposal, bundle, since)

@@ -67,7 +67,7 @@ def check_proposal(path: Path) -> list[str]:
     if not source.exists():
         raise FileNotFoundError(f"Kein Bündel für {proposal.week}, erwartet unter {source}")
     bundle = PlanBundle.model_validate_json(source.read_text(encoding="utf-8"))
-    return validate_proposal(proposal, bundle)
+    return validate_proposal(proposal, bundle, date.today())
 
 
 def _read_proposal(path: Path) -> Proposal:
