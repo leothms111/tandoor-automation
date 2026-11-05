@@ -13,9 +13,13 @@ Diese Regeln gelten für jeden Weg zum Plan, im Gespräch wie im Lauf über die 
 Zwei Personen. Eine Portion ist eine Mahlzeit für eine Person, `servings` an einem Eintrag ist
 also die Zahl der gekochten Portionen, nicht die der Esser.
 
-Geplant werden immer alle sieben Mittag- und alle sieben Abendessen. Gekocht wird an vier Tagen:
-samstags ein Gericht für den Samstagabend und den Sonntagmittag, sonntags die Mittagessen der
-Woche und das Abendessen, dienstags und donnerstags je ein Abendessen für zwei Abende.
+Geplant werden immer alle sieben Mittag- und alle sieben Abendessen. Jede andere Mahlzeit unter
+`meal_types`, etwa ein Frühstück, bleibt leer, außer die Hinweise verlangen sie ausdrücklich. Dann
+plane sie nur an den genannten Tagen, mit Rezept und zwei Portionen je Tag.
+
+Gekocht wird an vier Tagen: samstags ein Gericht für den Samstagabend und den Sonntagmittag,
+sonntags die Mittagessen der Woche und das Abendessen, dienstags und donnerstags je ein Abendessen
+für zwei Abende.
 
 **Die Woche läuft von Samstag bis Freitag.** Der Plan entsteht donnerstags, freitags wird
 eingekauft, am Samstag fängt sie an. Der Einkauf steht damit am Anfang der Woche und nicht
@@ -179,8 +183,9 @@ nicht die Zahl seiner Einträge.
 
 Der Code prüft, ob es das Rezept und die Mahlzeit gibt, ob Name und ID zusammenpassen, ob der
 Zeitraum in der Woche liegt, ob ein belegter Platz überschrieben würde und ob an jedem Tag für
-beide Mahlzeiten mindestens zwei Portionen eingeplant sind. Ein Eintrag ohne Rezept zählt dabei
-als versorgt und braucht keine Portionen, muss aber einen Titel tragen.
+Mittag- und Abendessen mindestens zwei Portionen eingeplant sind. Andere Mahlzeiten prüft er
+darauf nicht. Ein Eintrag ohne Rezept zählt dabei als versorgt und braucht keine Portionen, muss
+aber einen Titel tragen.
 
 Vor dem Schreiben prüft er zusätzlich die Anteile der entfalteten Form: ein Eintrag muss so viele
 Portionen am Tag tragen, wie Esser an ihm stehen, ohne Marke so viele, wie der Haushalt hat. Das

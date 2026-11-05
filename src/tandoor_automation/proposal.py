@@ -22,6 +22,10 @@ HOUSEHOLD = len(MARKS)
 TOGETHER = "Abendessen"
 """Die Mahlzeit, die alle zusammen essen. Sie trägt keine Marken, SyncHealth teilt sie auf die Esser
 im Haushalt auf und erkennt sie an genau diesem Namen."""
+REQUIRED = ("Mittagessen", TOGETHER)
+"""Die Mahlzeiten, die an jedem Tag satt werden müssen, erkannt am Namen. Jede andere Mahlzeit in
+Tandoor, etwa ein Frühstück, ist frei: geplant wird sie nur auf Wunsch, und ein leerer Platz dort
+ist kein Mangel."""
 TOLERANCE = 0.01
 
 
@@ -147,13 +151,15 @@ def _is_booked(proposal: Proposal, meal_type: MealType, day: date) -> bool:
 def _coverage_problems(proposal: Proposal, bundle: PlanBundle) -> list[str]:
     """Findet Plätze der Woche, für die zu wenige Portionen eingeplant sind.
 
-    Zwei Sorten Platz bleiben außen vor: einer, den Tandoor schon belegt, etwa durch das Gericht
-    der Vorwoche, und einer, für den der Vorschlag selbst einen Termin ohne Rezept einträgt. An
-    beiden wird gegessen, nur nicht aus der eigenen Küche.
+    Gezählt werden nur die Mahlzeiten aus `REQUIRED`. Zwei Sorten Platz bleiben außen vor: einer,
+    den Tandoor schon belegt, etwa durch das Gericht der Vorwoche, und einer, für den der Vorschlag
+    selbst einen Termin ohne Rezept einträgt. An beiden wird gegessen, nur nicht aus der eigenen
+    Küche.
     """
+    required = [meal_type for meal_type in bundle.meal_types if meal_type.name in REQUIRED]
     problems = []
     for day in bundle.days:
-        for meal_type in bundle.meal_types:
+        for meal_type in required:
             if _is_occupied(bundle, meal_type, day) or _is_booked(proposal, meal_type, day):
                 continue
             served = sum(

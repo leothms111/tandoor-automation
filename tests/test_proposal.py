@@ -192,3 +192,10 @@ def test_eintrag_ohne_rezept_und_ohne_titel() -> None:
     )
     problems = validate_proposal(proposal, _bundle())
     assert any("weder Rezept noch Titel" in problem for problem in problems)
+
+
+def test_mahlzeit_ausser_mittag_und_abend_ist_frei() -> None:
+    """Ein Frühstück in Tandoor macht die Woche nicht mangelhaft, solange es niemand verlangt."""
+    bundle = _bundle()
+    bundle.meal_types.insert(0, MealType(id=3, name="Frühstück"))
+    assert validate_proposal(_proposal(), bundle) == []
